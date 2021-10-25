@@ -1,14 +1,17 @@
 package com.manu.hibernate.demo;
 
+import com.manu.hibernate.demo.entity.Course;
 import com.manu.hibernate.demo.entity.Instructor;
 import com.manu.hibernate.demo.entity.InstructorDetail;
+import com.manu.hibernate.demo.entity.Review;
+import com.manu.hibernate.demo.entity.Student;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 
-public class DeleteDemo {
+public class GetCourseForKellyDemo {
 
 	public static void main(String[] args) {
 
@@ -17,6 +20,9 @@ public class DeleteDemo {
 								.configure("hibernate.cfg.xml")
 								.addAnnotatedClass(Instructor.class)
 								.addAnnotatedClass(InstructorDetail.class)
+								.addAnnotatedClass(Course.class)
+								.addAnnotatedClass(Review.class)
+								.addAnnotatedClass(Student.class)
 								.buildSessionFactory();
 
 		// create session
@@ -26,18 +32,14 @@ public class DeleteDemo {
 			// start a transaction
 			session.beginTransaction();
 
-			// get instructor by primary key / id
-			int theId = 1;
-			Instructor tempInstructor =
-				session.get(Instructor.class, theId);
-			System.out.println("Found instructor: " + tempInstructor);
+			// get the student from database
+			int studentId = 1;
+			Student tempStudent = session.get(Student.class, studentId);
 
-			// delete the instructors
-			if (tempInstructor != null) {
-				System.out.println("Deleting: "+ tempInstructor);
-				// will also delete associate "details" object bcz of CascadeType.ALL
-				session.delete(tempInstructor);
-			}
+			System.out.println("\nLoaded student: " + tempStudent);
+			System.out.println("Courses: " + tempStudent.getCourses());
+
+
 
 			//commit transaction
 			session.getTransaction().commit();
@@ -45,6 +47,9 @@ public class DeleteDemo {
 
 		}
 		finally{
+			// add clean up code
+			session.close();
+
 			factory.close();
 		}
 	}
